@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script src="js/api.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<style type="text/css">
+			.mui-content {
+				margin-top: 2px;
+			}
+			.ulcss{
+				margin-top: 0.625rem;
+			}
+			.acss a{
+				text-align: center;
+				color: #fff;
+				text-decoration: none;
+				background-color: rgb(100,149,237);
+            }
+			/*个人主页的样式表*/
+			.head {
+				width: 100%;
+				height: 10em;
+				display: -webkit-box;
+				-webkit-box-align: center;
+				-webkit-box-pack: justify;
+				background: #B0E0E6;
+				/* fallback for old browsers */
+				background: -webkit-linear-gradient(to left, #6495ED, #B0E0E6);
+				/* Chrome 10-25, Safari 5.1-6 */
+				background: linear-gradient(to left, #6495ED, #B0E0E6);
+				/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			}
+			
+			.head_Avatar {
+				width: 6em;
+				height: 6em;
+				border-radius: 50%;
+				margin-left: 20px;
+				overflow: hidden;
+				border: 2px solid white;
+			}
+			
+			.head_name {
+				height: 4em;
+				color: white;
+			}
+			
+			.head_name div:nth-of-type(1) {
+				font-size: 1.5em;
+				height: 1.5em;
+			}
+			
+			.head_but {
+				width: 4em;
+				height: 6em;
+				margin-right: 10px;
+				text-align: center;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-box-pack: justify;
+			}
+			
+			.head_but span {
+				font-size: 2em;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+ 		<!-- <header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">设置中心</h1>
+		</header> -->
+		<div class="mui-content">
+			<!--内容-->
+			<!--头部-->
+			<div class="head">
+				<!--头像-->
+				<div class="head_Avatar">
+					<img src="img/boy.png" / style="width: 100%;">
+				</div>
+				<!--昵称-->
+				<div class="head_name">
+					<div id="username">用户名</div>
+					<div id="usercode">账户：18710789465</div>
+				</div>
+				<!--消息与二维码-->
+				<div class="head_but">
+					<div class="a" htmlName="Home_lib/Home_news/Home_news.html"><span class="mui-icon mui-icon-chatbubble"></span></div>
+					<div><span class="iconfont icon-erweima"></span></div>
+				</div>
+			</div>
+			<!--头部-->
+			<ul class="mui-table-view ulcss">
+				<li class="mui-table-view-cell" id="pd">
+					<a class="mui-navigate-right"><span class="mui-icon iconfont icon-modify-pd" style="color:#F4A460;"></span>
+					修改密码
+					</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view ulcss">
+				<li class="mui-table-view-cell" id="huancunLi">
+					<a class="mui-navigate-right"><span class="mui-icon iconfont icon-qinglihuancun " style="color:#1296db;"></span>
+					清理缓存
+					<span class="mui-badge" id="huancun">0</span></a>
+				</li>
+				<li class="mui-table-view-cell" id="huancunLi">
+					<a class="mui-navigate-right"><span class="mui-icon iconfont icon-banben " style="color:#79FF79;"></span>
+					版本更新
+					<span class="mui-badge" id="version">0</span></a>
+				</li>
+				<!--<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">Item 3</a>
+				</li> -->
+			</ul>
+			
+			<ul class="mui-table-view ulcss" >
+				<li class="mui-table-view-cell acss" id="tuichuLi">
+					<a >退出当前账号</a>
+				</li>
+			</ul>
+			
+			
+		</div>
+		<script type="text/javascript" charset="utf-8">
+			var size_m = '';var usercode = '';var username = '';var version='';
+			var factory='';var company='';var bsCode='';
+			mui.plusReady(function() {
+				//usernme
+				usercode = api_localStorageGet('code');
+				username = api_localStorageGet('name');
+				//console.log(api_localStorageGet('name'))
+				document.getElementById("username").innerHTML = username;
+				document.getElementById("usercode").innerHTML = "账号:"+usercode;
+				//缓存
+				plus.cache.calculate(function(size) {
+				var sizeCache = size;
+				size_m = parseFloat(sizeCache / (1024 * 1024)).toFixed(2);
+				if(size_m > 1) {
+					document.getElementById("huancun").innerHTML = size_m + "M";
+				}
+			});
+			clear();
+			login_out();
+			getVersion();
+			saveParam();
+			modifyPd();
+			})
+			function clear(){
+				mui("#huancunLi").on("tap", "a", function() {
+						mui.confirm("您目前的系统缓存为" +size_m + "M？", "清除缓存", ["确认", "取消"], function(e) {
+							if(e.index == 1) {
+								
+							} else {
+								saveParam();
+								plus.cache.clear(function() {
+									document.getElementById("huancun").innerHTML = "0";
+									alert("缓存清除完毕")
+								});
+								setParam();
+							}
+						});
+					});
+			}
+			function login_out(){
+				mui("#tuichuLi").on("tap", "a", function() {
+					mui.confirm("确定要退出登录吗？", "退出登录", ["确认", "取消"], function(e) {
+						if(e.index == 1) {
+							
+						} else {
+							plus.runtime.restart();
+						}
+					});
+				});
+			}
+			function modifyPd(){
+				mui("#pd").on("tap", "a", function() {
+					mui.openWindow({
+						id: 'modifyPd',
+						url: '/web/modifyPd.html',
+						extras: {
+							//自定义扩展参数，可以用来处理页面间传值 
+						},
+						waiting: { // 控制 弹出转圈框的信息
+							autoShow: true, //自动显示等待框，默认为true 
+							title: '加载中' //等待对话框上显示的提示内容 
+						}
+					});
+				});
+			}
+			function getVersion(){
+			  document.getElementById("version").innerHTML = api_localStorageGet('version');
+			}
+			function saveParam(){
+				version = api_localStorageGet('version');
+				factory = api_localStorageGet('factory');
+				company = api_localStorageGet('company');
+				bsCode = api_localStorageGet('bsCode');
+			}
+			function setParam(){
+				api_localStorageSave("code", usercode);
+				api_localStorageSave("name", username);
+				api_localStorageSave("factory", factory);
+				api_localStorageSave("company", company);
+				api_localStorageSave("version", version);
+				sessionStorage.setItem("bsCode", bsCode); 
+			}
+
+		</script>
+	</body>
+</html>

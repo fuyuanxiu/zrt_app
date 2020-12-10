@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script src="js/api.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<style type="text/css">
+			.mui-content {
+				margin-top: 2px;
+			}
+			.badge{
+				position: absolute;
+				top:0;
+				right: 0;
+				z-index: 99;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title" id="title">首页</h1>
+		</header>
+			<nav class="mui-bar mui-bar-tab">
+            <a id="defaultTab" class="mui-tab-item mui-active">
+                <span class="mui-icon mui-icon-home"></span>
+                <span class="mui-tab-label">首页</span>
+            </a>
+            <!-- <a class="mui-tab-item" href="b.html">
+                <span class="mui-icon mui-icon-email"></span>
+                <span class="mui-tab-label">消息</span>
+            </a> -->
+            <!-- <a class="mui-tab-item" href="c.html">
+                <span class="mui-icon mui-icon-contact"></span>
+                <span class="mui-tab-label">通讯录</span>
+            </a> -->
+            <a class="mui-tab-item" >
+                <span class="mui-icon mui-icon-gear"></span>
+                <span class="mui-tab-label">设置</span>
+            </a>
+        </nav>
+		
+		<script type="text/javascript" charset="utf-8">
+			mui.plusReady(function(){
+			var pages = ["main_jy.html","setting.html"];
+			var titles =['首页','设置中心']
+			var arr = document.getElementsByClassName("mui-tab-item")
+			var styles = {
+				top:"45px",
+				bottom:"51px"
+			}
+			var pageArr = [];
+			var slef = plus.webview.currentWebview();
+			for(var i=0; i<arr.length; i++){
+				// 有几个选项卡，需要创建几个子页面
+				var page = plus.webview.create(pages[i],pages[i],styles);
+				pageArr.push(page);
+				!function(i){
+					arr[i].addEventListener("tap",function(){
+						// 让当前页面(i)显示，不是当前页面隐藏
+						for(var j=0; j<pageArr.length; j++){
+							if(j!=i) pageArr[j].hide();
+							else pageArr[j].show();
+						}
+						/* 让新创建的webview，追加合并到当前的窗口上。合并成一个窗口。
+						 * 目的：将父子窗口合并成一个页面，实现同开同关的效果。 避免点击返回安监室，子页面先关闭，而父页面的头部和尾部没有关闭的BUG。
+						 */
+						slef.append(pageArr[i]);
+						document.getElementById("title").innerHTML = titles[i];
+					})
+				}(i);
+			}
+			// 默认触发第0个选项卡的tap事件。
+			mui.trigger(arr[0],"tap");
+		});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+	<script src="js/api.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/template-web.js"></script>
+	<script src="js/api.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+	
+	<script src="js/jquery-1.11.1.js"></script> 
+	<script src="js/jquery.xml2json.js.js"></script> 
+	
+	<!-- <link rel="stylesheet" type="text/css" href="css/personal.css" /> -->
+	<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_783714_7tht2ujc04k.css" />
+	<script src="js/main.js"></script>
+    <style type="text/css">
+        .mui-content{margin-top: 2px;}
+        .mui-btn{width: 80px;}
+		/*导航栏背景颜色*/
+		.mui-bar {
+		   background-color: #99CCFF;
+		}
+    </style>
+</head>
+<body >
+    <header class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">MES移动终端</h1>
+    </header>
+    <div class="mui-content">
+		<ul class="mui-table-view mui-grid-view mui-grid-9" id="list">
+		</ul> 
+    </div>
+     <script id='li-template' type="text/template">
+			<% for(var i in record){ var item=record[i]; %>
+			    {{if item[1]=='tuichu'}}
+				   <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-4 bg1">
+				   	<a data-href="login.html" data-id="login">
+				   		<span class="mui-icon iconfont icon-tuichu" style="color:#de1312"></span>
+				   		<div class="mui-media-body"><%=(item[0])%></div>
+				   	</a>
+				   </li>
+				{{else}}
+					<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-4 bg1">
+						<a data-href="<%=(item[0])%>" data-id="input">
+							<span class="mui-icon iconfont icon-<%=(item[1])%> " style="color: #FF8C00;"></span>
+							<div class="mui-media-body"><%=(item[0])%></div>
+						</a>
+					</li>
+				{{/if}}
+			   
+			<% } %>
+		</script>
+
+<script type="text/javascript" charset="utf-8">
+        mui.init();
+        mui.plusReady(function(){
+			
+			getData();
+			addTap();
+        })
+		function getData(){
+			mui.ajax(API.webPath+'/queryPurview?userno='+api_localStorageGet("code"),{
+			    data:{},
+			    dataType:'json',
+			    type:'POST',
+			    timeout:10000,
+				headers:{'Content-Type':'application/json'},	
+			    success:function(data){
+					//document.getElementById("password").value="";
+			        if(data.result){ 
+						//console.log(JSON.stringify(data))
+			            //取数成功
+						//"来料扫描#3","生产领料#2","生产退料#3","杂项入库#7","杂项出库#9","库存调拨#6","库存盘点#10","退出#tuichu"
+			           document.getElementById('list').innerHTML = template('li-template', {
+			           	"record": data.data
+			           });
+					   
+			        }else{
+			            //登录失败
+			            plus.ui.toast(data.msg);
+			        }
+			    },
+			    error:function(xhr,type,errorThrown){
+					plus.ui.toast(type);
+			    }
+			})
+		}
+		
+		
+		function addTap(){
+			mui('#list').on("tap", "a", function(e) {
+				var id=this.getAttribute("data-id");	
+				var title=this.getAttribute("data-href");
+				if(id == 'login'){
+					plus.runtime.restart();
+				}else{
+					api_localStorageSave("functionName", title);
+					mui.openWindow({
+					    url:'input.html?functionName='+encodeURI(encodeURI(title)),
+					    id:id,
+					})
+				}
+				 
+			})
+		}
+		
+    </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script src="js/common.js"></script>
+		<script src="js/template-web.js"></script>
+		<script src="js/api.js"></script>
+		
+		<script src="js/jquery-1.11.1.js"></script> 
+		<script src="js/jquery.xml2json.js.js"></script> 
+		
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="css/personal.css" />
+<!-- 		<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_783714_7tht2ujc04k.css" /> -->
+		<script src="js/main.js"></script>
+		<style type="text/css">
+			/* body{
+				background: linear-gradient(to left, #6495ED, #B0E0E6);
+			} */
+			/*导航栏背景颜色*/
+			/* .mui-bar {
+			   background-color: #FFFFCC;
+			} */
+			/*返回按钮图标*/
+			.mui-bar .mui-icon {
+				font-size: 30px;
+				padding-top: 7px;
+				padding-bottom: 13px;
+				color: #000000;
+			}
+			/*标题*/
+			.mui-bar .mui-title {
+				font-weight: 400;
+				color: #000000;
+			}
+			/*导航栏底部阴影*/
+			.mui-bar-nav {
+				box-shadow: 0px 1px 0px 0px #999999;
+			}
+			/*导航栏背景颜色*/
+			header.mui-bar {
+				background-color: #99CCFF;
+			}
+			.mui-content {
+				margin-top: 2px;
+				
+			}
+
+			.mui-btn {
+				width: 80px;
+			}
+               .mui-badge1 {
+				padding: 0px;
+				width: 65%;
+				float: right;
+				line-height: 42px;
+				font-size: 14px;
+			}
+			input[readonly] {
+				background-color: #f1f1f5
+			}
+			.ulcss{
+				margin-top: 0.625rem;
+			}
+			.acss a{
+				text-align: center;
+				color: #fff;
+				text-decoration: none;
+				/* background-color: rgb(100,149,237); */
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title" id="title">MES移动终端</h1>
+		</header>
+
+		<div class="mui-content" >
+			<div id="divid"></div>
+			<!-- <ul class="mui-table-view ulcss" >
+				<li class="mui-table-view-cell acss" style="background-color: rgb(153,204,153);" id="cancel">
+					<a >取消</a>
+				</li>
+			</ul> -->
+			<ul class="mui-table-view ulcss" >
+				<li class="mui-table-view-cell acss" style="background-color: rgb(255,153,102);" id="tuichu">
+					<a >退出</a>
+				</li>
+			</ul>
+		</div>
+		<script id='form-template' type="text/template">
+			<form class="mui-input-group" id="form">
+		<% for(var i in record){ var item=record[i].split("#"); %>
+		   
+		   {{if item[2] == 'VARCHAR2'}}
+		      {{if item[4] == '3'}}
+			    <div class="mui-input-row">
+			      <label><%=(item[1])%></label>
+				  {{if item[3] == '1'}}
+				    <input readonly type="text" id="<%=(item[0])%>" value="<%=(item[12])%>" style="background-color: #f1f1f5">
+				  {{else }}
+					<input type="text" id="<%=(item[0])%>" class="mui-input-clear" value="<%=(item[12])%>" οnfοcus="this.select()" οnmοuseοver="this.focus()" onkeyup="enterSearch(event,'<%=(item[7])%>','<%=(item[8])%>','<%=(item[0])%>','<%=(item[9])%>','<%=(item[10])%>')" placeholder="请输入<%=(item[1])%>">	
+				  {{/if}}   
+			    </div>
+			   {{else if item[4] == '4'}} 
+			   <div class="mui-input-row">
+			   	<label><%=(item[1])%></label>
+				<input id="<%=(item[0])%>" value="<%=(item[12])%>" type="hidden">
+			   	<a class="mui-navigate-right">
+			   		<span class="mui-badge1">
+			   			<select class="mui-select" id="select-<%=(item[0])%>" style="margin:auto; color:#000;" onchange="getCheckItem('<%=(item[8])%>','<%=(item[0])%>');">
+			   				<%=(item[0])%>
+			   			</select>
+			   		</span>
+			   	</a>
+			   </div>
+			   {{else}}
+				   <div class="mui-input-row">
+				     <label><%=(item[1])%></label>
+				      <input id="<%=(item[0])%>" value="<%=(item[12])%>" type="hidden"> 
+				     <div id="<%=(item[0])%>-switch" data-href="<%=(item[0])%>" class="mui-switch">
+				   	  <div class="mui-switch-handle"></div>
+				   	</div>
+				   </div>
+			  {{/if}}
+		   {{else if item[2] == 'MEMO'}}
+			   <div class="mui-input-row" style="height: 4.5rem;">
+				<label><%=(item[1])%></label>
+				<textarea  class="form" rows="5" id="<%=(item[0])%>"></textarea>
+			   </div>
+		   {{/if}}
+		   
+		<% } %>
+		
+		</form>
+		
+	</script>
+
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui.plusReady(function() { 
+				document.getElementById("title").innerHTML = api_localStorageGet("functionName");
+				document.getElementById("divid").innerHTML = "";
+				getData();
+				tuichuBtn();
+			})
+
+			function getData() {
+				/* mui.ajax(API.webPath + '/getRfSetup?functionName=' + api_localStorageGet("functionName"), {
+					data: {},
+					dataType: 'json',
+					type: 'POST',
+					timeout: 10000,
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data))
+						if (data.result) {
+							//console.log(JSON.stringify(data))
+							document.getElementById('divid').innerHTML = template('form-template', {
+								"record": data.data
+							});
+							addSwitchTog();
+							getSelectData();
+						} else {
+							//登录失败
+							plus.ui.toast(data.msg);
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.ui.toast("error:"+type);
+					}
+				}) */
+				jQueryWeb("/Get_rf_Setup",{"function_Name": api_localStorageGet("functionName"),
+						   "pmachtype": "WCE"},endGetDate)
+			}
+			function endGetDate(xmlHttpRequest, status){
+				if(status == 'success'){
+					//输出json格式内容
+					var json_obj = $.xml2json(xmlHttpRequest.responseXML);
+					console.log(JSON.stringify(json_obj));
+					var strs = JSON.stringify(json_obj);
+					if(strs.length > 0){
+						var strArray = new Array();
+						strArray = strs.split("[");
+						var testGetArrValue=strArray[0].toString().trim(); //获取数组的元素值
+						console.log(testGetArrValue == '"001')
+						if(testGetArrValue == '"001'){
+							var arrayObj = strArray.splice(1,strArray.length);
+							console.log(arrayObj)
+							document.getElementById('divid').innerHTML = template('form-template', {
+								"record": arrayObj
+							});
+							//addSwitchTog();
+							getSelectData();
+						}else{
+							 mui.alert(strArray[1], '系统提示', function() {
+								mui.back()
+							}); 
+						}
+					}else{
+						mui.alert('该用户无操作数据', '系统提示', function() {
+							mui.back()
+						});
+					}
+				}
+			}
+
+			function enterSearch(event, file7,str, fileId,file9,file10) {
+				if (event.keyCode == 13 || event.keyCode == 9) { //用户点击回车的事件号为13
+				    //判断是否需要调用存储过程
+					if(file7 != 'N'){
+						//{FILED4,FILED3,FILED5,FILED1,FILED2}{FILED1,FILED6,FILED7,INFO}
+						//拆分参数
+						doProByFile8(str,fileId);
+					}
+					//判断跳转字段
+					console.log(file9)
+					console.log(file10)
+					if(file9 == '1'){
+						//回车自动跳至下一非只读字段
+					}
+					if(file9 == '0' && file10 == ''){
+						//回车后就停留在本字段，本字段内容先清空
+						document.getElementById(fileId).value = '';
+						document.getElementById(fileId).focus();获取焦点
+					}
+					if(file10 != ''){
+						//跳至指定字段，当要求跳到指定字段时，这个指定字段及后面顺序的字段框内容均需要清空；
+						document.getElementById(file10).focus();获取焦点
+					}
+				}
+				return false;
+			}
+
+			function getExcProc(fileName, fileValue,outFiles,stype) {
+				fileName=fileName.replace(/\s+/g,"");
+				jQueryWeb("/Prc_rf_setup_ExcProc",{"c_function_Name": api_localStorageGet("functionName"),
+				"c_field_name": fileName,
+						   "pmachtype": "WCE",
+						   "c_in_field_val": fileValue},function (xmlHttpRequest, status){
+							   if( status == 'success'){
+								try {
+									   var json_obj = $.xml2json(xmlHttpRequest.responseXML);
+									   var str = JSON.stringify(json_obj);
+									   str = str.replace('"',"")
+									   str = str.replace('"',"")
+									   if(str.indexOf("001[") != -1 ){
+									   	if(stype == 'select'){
+											
+											str = str.replace('001[',"")
+											console.log(str)
+									   			var strs = str.split(','); //t[1].split(',');
+												var commHtml = "<option value=''>请点击选择</option>"
+									   			for(var i in strs){
+									   				if(strs[i].length>0){
+									   					commHtml += "<option value='"+strs[i]+"'>"+strs[i]+"</option>";
+									   				}
+									   				
+									   			}
+									   			document.getElementById('select-'+fileName).innerHTML = commHtml;	
+									   							
+									   	}else if(stype == 'proc'){
+									   		var strs = t[1].split(',');
+									   		for(var i = 0; i < strs.length; i++){
+									   			var t = strs[i];
+									   			var f = fileName.split(',');
+									   			if(document.getElementById(f[i])){
+									   				document.getElementById(f[i]).value = t[i];
+									   			}						
+									   		}
+									   	}
+									   }else{
+										   str = str.replace('002[',"")
+									   	mui.alert(str, '系统提示', function() {
+									   		//mui.back()
+									   	});
+									   }
+								} catch(err) {
+									console.log(err)
+									mui.alert('执行'+api_localStorageGet("functionName")+'中的'+fileName+'发送错误，请联系管理员', '系统提示', function() {
+										//mui.back()
+									});
+								}
+		
+							   	
+							   }
+							   })
+				/* var url = API.webPath + '/getExcProc?functionName=' + api_localStorageGet("functionName") +
+					'&fileName=' + fileName + '&pmachtype=&fileValue=' + fileValue+'&outFiles='+outFiles;
+					console.log(url)
+				mui.ajax(url, {
+						data: {},
+						dataType: 'json',
+						type: 'POST',
+						timeout: 10000,
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data))
+							if (data.result) {
+								if(stype == 'proc'){
+									console.log(data.data[0]);
+									for(var i = 0; i < data.data.length; i++){
+										var t = data.data[i];
+										if(document.getElementById(t[0])){
+											document.getElementById(t[0]).value = t[1];
+										}
+								
+									}
+								}else if(stype == 'select'){
+									var t = data.data.split(',');
+									var commHtml = "<option value=''>请点击选择</option>"
+									for(var i in t){
+										if(t[i].length>0){
+											commHtml += "<option value='"+t[i]+"'>"+t[i]+"</option>";
+										}
+										
+									}
+									document.getElementById('select-'+fileName).innerHTML = commHtml;
+									// document.getElementById(fileName).innerHTML = template('select-template', {
+									// 	"record1": [['12321']]
+									// });
+								}
+								
+							} else {
+								mui.alert(data.msg, '错误', function() {
+									//关闭回调函数
+									//clearUi()
+								});
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.ui.toast("error1:"+type);
+						}
+					}) */
+			}
+
+			function addSwitchTog() {
+				var switchs = document.getElementsByClassName('mui-switch');
+				if(switchs.length>0){
+					mui('.mui-switch')['switch']();
+					for(var i=0;i<switchs.length;i++){
+						switchs[i].addEventListener("toggle", function(event) {
+							var fileId = this.getAttribute('data-href');
+							if (event.detail.isActive) {
+								console.log("你启动了开关");
+								document.getElementById(fileId).value = "1";
+							} else {
+								console.log("你关闭了开关");
+								document.getElementById(fileId).value = "0";
+							}
+						})
+					}
+					
+				}
+			};
+		function getSelectData(){
+			var selects = document.getElementsByClassName('mui-select');
+			if(selects.length>0){
+				for(var i=0;i<selects.length;i++){
+					getExcProc(selects[i].innerHTML,  api_localStorageGet("code") + '[_N','','select');
+				}
+				
+			}
+		}
+		function getCheckItem(file8,fileId){
+			console.log(file8)
+			console.log(fileId)
+			var obj = document.getElementById('select-'+fileId); //定位id
+			var index = obj.selectedIndex; // 选中索引
+			var value = obj.options[index].value; // 选中值
+			if(value == ''){
+				plus.ui.toast('请选择');
+				return false;
+			}
+			document.getElementById(fileId).value = value;
+			doProByFile8(file8,fileId);
+		}
+		function doProByFile8(file8,fileId){
+			console.log(file8)
+			var date = file8.substring(1, file8.length - 1);
+			var a = date.split("}{");
+			var iput = a[0].split(',');
+			console.log(iput)
+			var fileValue = api_localStorageGet("code") + '[';
+			for (var i = 0; i < iput.length; i++) {
+				var fv = document.getElementById(iput[i]).value
+				fv = fv.replace(/\s*/g,"");
+				console.log(fv)
+				fileValue += fv + '[';
+			}
+			fileValue = fileValue.substring(0, fileValue.length - 1);
+			getExcProc(fileId, fileValue,a[1],'proc');
+		}
+		//退出按钮
+		function tuichuBtn(){
+			mui("#tuichu").on("tap", "a", function() {
+				mui.back();
+			});
+		}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.js"></script>
+		<script src="js/api.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		
+		<script src="js/jquery-1.11.1.js"></script> 
+		<script src="js/jquery.xml2json.js.js"></script> 
+		
+		<!--页面优化-->
+		<meta name="HandheldFriendly" content="true" />
+		<style type="text/css">
+			/* 		body{
+		width:100%;
+		height:100%;
+		background:url(img/bg.png)no-repeat;
+		background-size: cover;
+		} */
+			.mui-content {
+				margin-top: 0.125rem;
+				background-color: transparent;
+			}
+
+			.mui-btn {
+				width: 5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+		</header>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider">
+				<div class="mui-slider-group mui-slider-loop">
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="img/bg3.jpg">
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<form class="mui-input-group">
+				<div class="mui-input-row cell">
+					<label>用户名</label>
+					<input type="text" class="mui-input-clear" placeholder="请输入用户名" id="username" value="PL021">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input type="password" class="mui-input-password" placeholder="请输入密码" id="password">
+				</div>
+			</form>
+			<!-- 注意：登录按钮不能和账号密码输入框放在一个form里面 -->
+			<div class="mui-content-padded" align="center">
+				<button style="width: 100%;" type="button" class="mui-btn mui-btn-blue" id="login">登陆</button>
+				<!-- <button type="button" class="mui-btn mui-btn-green" id="reg">注册</button> -->
+			</div>
+		<!-- 	<ul class="mui-table-view ulcss" align="center">
+				<li class="mui-table-view-cell acss" id="tuichuLi">
+					<a >试用版</a>
+				</li>
+			</ul> -->
+
+			<div id="loadDiv" class="mui-popover mui-popover-action mui-popover-bottom" data-disable-auto-close="true">
+				<canvas id="canvas" width="500" height="500"></canvas>
+			</div>
+
+		</div>
+
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			// 重写移动端返回键 
+			var first = null;
+			mui.back = function() {
+				mui.plusReady(function() {
+					//首页返回键处理
+					//处理逻辑：1秒内，连续两次按返回键，则退出应用；
+					if (!first) {
+						first = new Date().getTime();
+						mui.toast('再按一次退出应用');
+						setTimeout(function() {
+							first = null;
+						}, 1000);
+					} else {
+						if (new Date().getTime() - first < 1000) {
+							plus.runtime.quit();
+						}
+					}
+				});
+			}
+			mui.plusReady(function() {
+				/* var day=new Date().getDate();
+				//alert(day)
+				if(day>=18){
+					alert('已过试用期')
+					return false;
+				} */
+				//update();
+				//var reg=document.getElementById("reg");
+				//输入法软键盘的搜索
+				document.getElementById("password").addEventListener("keydown", function(e) {
+					if (13 == e.keyCode) { //点击了“搜索”   
+						//$("#values").focus();获取焦点 
+						document.activeElement.blur(); //隐藏软键盘  
+						submit(); //这里可以写搜索会触发的逻辑，具体内容根据项目需求
+					}
+				}, false);
+				
+				var login = document.getElementById("login");
+
+				login.addEventListener('tap', function() {
+					submit();
+				})
+			})
+			function submit(){
+				var username = document.getElementById("username");
+				var password = document.getElementById("password");
+				if (username.value.length == 0) {
+					plus.ui.toast("用户名不能为空");
+					return;
+				}
+				if (password.value.length == 0) {
+					plus.ui.toast("密码不能为空");
+					return;
+				}
+				mui('#login').button('loading');
+				endLogin();
+				/* doPost("verifyUser",
+				     {
+					   "username": username.value.toString(),
+					   "password": password.value.toString()},endLoginSoap,endLogin) */ 
+				setTimeout(function() {
+					mui('#login').button('reset');
+				}.bind(this), 1000);
+			}
+			function endLoginSoap(xmlHttpRequest, status){
+				//console.log(status)
+				if(status == 'success'){
+					//输出json格式内容
+					var json_obj = $.xml2json(xmlHttpRequest.responseXML);
+					console.log(JSON.stringify(json_obj))
+					if(json_obj == 'true'){
+						plus.ui.toast("登录成功");
+						api_localStorageSave("code", username.value);
+						OpenWindow('main_rf_soap','main_rf_soap.html?username=' + username.value,{});
+					}else{
+						mui.alert('系统提示', '用户名或者密码错误', function() {
+							//info.innerText = '你刚关闭了警告框';
+							document.getElementById("password").value = "";
+						});
+					}	
+				}
+			}
+			function endLogin(){
+				console.log(API.webPath + '/login')
+				mui.ajax(API.webPath + '/login', {
+					data: {
+						username: username.value.toString(),
+						password: password.value.toString()
+					},
+					dataType: 'json',
+					type: 'POST',
+					timeout: 10000,
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						document.getElementById("password").value = "";
+						if (data.result) {
+							//登录成功
+							plus.ui.toast("登录成功");
+							api_localStorageSave("code", data.data.FCODE);
+							api_localStorageSave("name", data.data.FNAME);
+							api_localStorageSave("factory", data.data.FFACTORY);
+							api_localStorageSave("company", data.data.FCOMPANY);
+							sessionStorage.setItem("bsCode", data.data.FCODE); //存一个session会话
+							mui.openWindow({
+								url: 'main_rf.html?username=' + username.value,
+								id: 'main_rf',
+							})
+								
+						} else {
+							//登录失败
+							plus.ui.toast(data.msg);
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.ui.toast('登录失败!失败类型是:' + type);
+					}
+				})
+			}
+			function update() {
+				plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+					ver = inf.version;
+					//console.log('ver:' + ver);
+					mui.ajax(API.webPath + '/queryAppVersion', {
+						data: {},
+						dataType: 'json',
+						type: 'POST',
+						timeout: 10000,
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(res) {
+							//console.log('res:' + JSON.stringify(res))
+							if (res.result) {
+								if (res.data.Version > ver) {
+									//console.log('1111')
+									dowload(res.data.Url);
+									mui('#loadDiv').popover('show');
+									//showPer();
+								}
+							} else {
+								plus.nativeUI.alert(res.msg);
+							}
+							api_localStorageSave("version", ver);//保存当前版本号
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.ui.toast('登录失败!失败类型是:' + type);
+						}
+					})
+				});
+			}
+			//下载文件
+			function dowload(url) {
+				var options = {
+					method: "GET"
+				};
+				dtask = plus.downloader.createDownload(url, options);
+				dtask.addEventListener("statechanged", function(task, status) {
+					switch (task.state) {
+						case 1: // 开始
+							console.log("开始下载...");
+							break;
+						case 2: // 已连接到服务器
+							console.log("链接到服务器...");
+							break;
+						case 3: // 已接收到数据
+							var daxiaoa = task.downloadedSize / task.totalSize
+							var a = Math.floor(daxiaoa * 100) + '%'
+							//clearInterval(i);
+							var baifenbiw = (Math.round(daxiaoa * 100) / 100) * 100
+							//console.log(baifenbiw)
+							showPer(a,'下载中');
+							break;
+						case 4: // 下载完成
+							console.log("下载完成！");
+							console.log(task.totalSize)
+							plus.io.resolveLocalFileSystemURL(task.filename, function(entry) {
+								console.log(entry.toLocalURL()) //绝对地址  
+								speed = 0.1;
+								showPer(speed,'安装中');
+								plus.runtime.install(entry.toLocalURL(), {}, function() {
+								plus.nativeUI.alert("安装成功！", function() {
+									plus.runtime.restart();
+								});
+							}, function(e) {
+								plus.nativeUI.alert("更新失败===" + e.message);
+							});									
+							});
+							console.log(task.filename)
+							break;
+					}
+				});
+
+				dtask.start();
+			}
+			var speed = 0.1;
+			function showPer(baifenbi,aln) {
+				var canvas = document.getElementById('canvas'), //获取canvas元素
+					context = canvas.getContext('2d'), //获取画图环境，指明为2d
+					centerX = canvas.width / 2, //Canvas中心点x轴坐标
+					centerY = canvas.height / 2, //Canvas中心点y轴坐标
+					rad = Math.PI * 2 / 100, //将360度分成100份，那么每一份就是rad度
+					speed2 = 0.1; //加载的快慢就靠它了 
+				//绘制5像素宽的运动外圈 
+				function blueCircle(n) {
+					context.save();
+					context.strokeStyle = "#fff"; //设置描边样式
+					context.lineWidth = 5; //设置线宽
+					context.beginPath(); //路径开始
+					context.arc(centerX, centerY, 100, -Math.PI / 2, -Math.PI / 2 + n * rad, false); //用于绘制圆弧context.arc(x坐标，y坐标，半径，起始角度，终止角度，顺时针/逆时针)
+					context.stroke(); //绘制
+					context.closePath(); //路径结束
+					context.restore();
+				}
+				//绘制白色外圈
+				function whiteCircle() {
+					context.save();
+					context.beginPath();
+					context.lineWidth = 2; //设置线宽
+					context.strokeStyle = "Black";
+					context.arc(centerX, centerY, 100, 0, Math.PI * 2, false);
+					context.stroke();
+					context.closePath();
+					context.restore();
+				}
+				//百分比文字绘制
+				function text(n,aln) {
+					context.save(); //save和restore可以保证样式属性只运用于该段canvas元素
+					context.strokeStyle = "#614cf6"; //设置描边样式
+					context.font = "40px Arial"; //设置字体大小和字体
+					//绘制字体，并且指定位置
+					//context.strokeText(n.toFixed(0) + "%", centerX - 25, centerY + 8);
+					context.strokeText(n, centerX - 30, centerY + 8);
+					context.stroke(); //执行绘制					
+					context.font = "20px Arial";
+					context.strokeText(aln, centerX - 35, centerY + 32);
+					context.restore();
+				}
+				//动画循环
+				context.clearRect(0, 0, canvas.width, canvas.height);
+				whiteCircle();
+				text(baifenbi,aln);
+				blueCircle(speed);
+
+				// (function drawFrame() {
+				// 	window.requestAnimationFrame(drawFrame);
+				// 	context.clearRect(0, 0, canvas.width, canvas.height);
+				// 	whiteCircle();
+				// 	text(speed);
+				// 	blueCircle(speed);
+				// 	if (speed > 100) return;
+				// 	speed += 0.1;
+				// }());
+				//if (speed > 100) return;
+				 	speed += 0.2;
+			}
+		</script>
+	</body>
+</html>
