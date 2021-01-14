@@ -230,7 +230,14 @@
 									for(var i = 0; i < data.data.length; i++){
 										var t = data.data[i];
 										if(document.getElementById(t[0])){
-											document.getElementById(t[0]).value = t[1];
+											//document.getElementById(t[0]).value = t[1];
+											//20200420-fyx,如果返回值包括{则是下拉框类型
+											if(t[1].indexOf("{") == -1){
+												document.getElementById(t[0]).value = t[1];
+											}else{
+												var a = t[1].split('{')
+												setSelect(a,t[0])
+											}
 										}
 								
 									}
