@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script src="js/common.js"></script>
+		<script src="js/template-web.js"></script>
+		<script src="js/api.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="css/personal.css" />
+		<link rel="stylesheet" type="text/css" href="css/comment.css" />
+		<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_783714_7tht2ujc04k.css" />
+		<script src="js/main.js"></script>
+		<style type="text/css">
+			/* body{
+				background: linear-gradient(to left, #6495ED, #B0E0E6);
+			} */
+			/*导航栏背景颜色*/
+			/* .mui-bar {
+			   background-color: #FFFFCC;
+			} */
+			/*返回按钮图标*/
+			.mui-bar .mui-icon {
+				font-size: 30px;
+				padding-top: 7px;
+				padding-bottom: 13px;
+				color: #000000;
+			}
+
+			/*标题*/
+			.mui-bar .mui-title {
+				font-weight: 400;
+				color: #000000;
+			}
+
+			/*导航栏底部阴影*/
+			.mui-bar-nav {
+				box-shadow: 0px 1px 0px 0px #999999;
+			}
+
+			/*导航栏背景颜色*/
+			header.mui-bar {
+				background-color: #99CCFF;
+			}
+
+			.mui-content {
+				margin-top: 2px;
+
+			}
+
+			.mui-btn {
+				width: 80px;
+			}
+
+			.mui-badge1 {
+				padding: 0px;
+				width: 65%;
+				float: right;
+				line-height: 42px;
+				font-size: 14px;
+			}
+
+			input[readonly] {
+				background-color: #f1f1f5
+			}
+
+			.ulcss {
+				margin-top: 0.625rem;
+			}
+
+			.acss a {
+				text-align: center;
+				color: #fff;
+				text-decoration: none;
+				/* background-color: rgb(100,149,237); */
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title" id="title">MES移动终端</h1>
+		</header>
+		<div class="mui-content">
+			<div id="divid">
+				<div style="height: 12.75rem;overflow-y: auto;overflow-x:auto;">
+					<table width="100%" class="table">
+						<thead>
+							<tr>
+								<th width="30%">列1</th>
+								<th width="20%">列2</th>
+							</tr>
+						</thead>
+						<tbody id="table_list">
+						</tbody>
+						<script id='tr-template' type="text/template">
+							<% for(var i in record){ var item=record[i]; %>
+							<tr>
+							<td width="40%"><%=(item.col1)%></td>
+							<td width="60%"><%=(item.col2)%></td>
+							</tr>
+							<% } %>
+						</script>
+					</table>
+				</div>
+				<form class="mui-input-group" id="form">
+					<div class="mui-input-row">
+						<label>线体</label>
+						<input class="mui-input-clear" type="text" id="line" onkeyup="enterSearch(event,'line')"/>
+					</div>
+					<div class="mui-input-row">
+						<label>换料站位</label>
+						<input class="mui-input-clear" type="text" id="position" onkeyup="enterSearch(event,'position')"/>
+					</div>
+					<div class="mui-input-row">
+						<label>新条码</label>
+						<input class="mui-input-clear" type="text" id="barcode" onkeyup="enterSearch(event,'barcode')"/>
+					</div>
+					<div class="mui-input-row">
+						<label>备注</label>
+						<input class="mui-input-clear" type="text" id="remarks"/>
+					</div>
+				</form>
+			</div>
+			<ul class="mui-table-view ulcss" >
+				<li class="mui-table-view-cell acss" style="background-color: rgb(153,204,153);" id="cancel">
+					<a >取消</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view ulcss" >
+				<li class="mui-table-view-cell acss" style="background-color: rgb(255,153,102);" id="tuichu">
+					<a >退出</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" charset="utf-8">
+		mui.init();
+		mui.plusReady(function() {
+			document.getElementById("title").innerHTML = api_localStorageGet("functionName");
+			//document.getElementById("divid").innerHTML = "";
+			var param = "换料QC核对[FILED1[" + api_localStorageGet("name")
+			getData(param,"name");
+			tuichuBtn();
+		})
+		
+		function enterSearch(event,str) {
+			if (event.keyCode == "13") {
+				if(str=="line"){
+					var line=document.getElementById('line').value
+					var param = "换料QC核对[FILED2[" + api_localStorageGet("name")+"["+line
+					getData(param,"line");
+					document.getElementById('position').focus()
+				}else if(str=="position"){
+					var line=document.getElementById('line').value
+					var position=document.getElementById('position').value
+					var param = "换料QC核对[FILED3[" + api_localStorageGet("name")+"["+line+"["+position
+					console.log(param)
+					getData(param,"position");
+					document.getElementById('barcode').focus()
+				}else if(str=="barcode"){
+					var line=document.getElementById('line').value
+					var position=document.getElementById('position').value
+					var barcode=document.getElementById('barcode').value
+					var param = "换料QC核对[FILED3[" + api_localStorageGet("name")+"["+line+"["+position+"["+barcode
+					getMacData(param,"barcode");
+					
+				}
+				
+			}
+		}
+		
+		function getData(param,type) {
+			mui.ajax(API.webPath + '/zrt/getMemo?pstr=' + param, {
+				data: {},
+				dataType: 'json',
+				type: 'POST',
+				timeout: 10000,
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					//console.log(JSON.stringify(data))
+					if (data.result) {
+						//console.log(JSON.stringify(data))
+						playerYes()
+						if(type=="position"){
+							console.log(data.data)
+							 document.getElementById('remarks').value=data.data;
+						}else{
+							var list = dealData(data.data,type)
+							document.getElementById('table_list').innerHTML = template('tr-template', {
+								"record": list
+							});
+						}
+						
+					} else {
+						plus.ui.toast(data.msg);
+						playerNo()
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					//console.log(errorThrown)
+					plus.ui.toast("error:" + type);
+					playerNo()
+				}
+			})
+		}
+		
+		function getMacData(param,type) {
+			
+			var t=encodeURIComponent(param)
+			mui.ajax(API.webPath + '/zrt/getMemoByBarcode?pstr=' + t, {
+				data: {},
+				dataType: 'json',
+				type: 'POST',
+				timeout: 10000,
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					//console.log(JSON.stringify(data))
+					if (data.result) {
+						playerYes()
+						//console.log(JSON.stringify(data))
+						document.getElementById('position').value='';
+						document.getElementById('barcode').value='';
+						document.getElementById('position').focus();
+						//var param = "换料QC核对[FILED1[" + api_localStorageGet("name")
+						//getData(param,"name");//lst-2021-3-24 delete
+						//显示线体下的菜单
+						var line=document.getElementById('line').value
+						var param = "换料QC核对[FILED2[" + api_localStorageGet("name")+"["+line
+						getData(param,"line");
+					} else {
+						document.getElementById('barcode').value='';
+						plus.ui.toast(data.msg);
+						playerNo()
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					plus.ui.toast("error:" + type);
+					playerNo()
+				}
+			})
+		}
+		
+		function dealData(params,type) {
+			var s = params.toString()
+			var list = []
+			list = s.split(",")
+			var result = [];
+			console.log(list)
+			for (var o = 0; o < list.length; o++) {
+				var arr1 = {}
+				var arr = {}
+				
+				//arr1 = list[o].split("   ")
+				if(type=="name"){
+					arr1 = list[o].split("   ")
+				}else if(type=="line"){
+					arr1 = list[o].split("  ")
+				}				
+				arr["col1"] = arr1[0]
+				arr["col2"] = arr1[1]
+	
+				result.push(arr)
+			}
+			//console.log(JSON.stringify(result))
+			return result;
+		}
+		
+		//播放声音-成功音效
+		function playerYes(){//播放音乐
+		    s = plus.audio.createPlayer( "wav/YES.WAV" );
+		    var num = s.getDuration();//获取音频总长度number
+		    s.play( function () {
+		       //console.log( "Audio play success!" ); 
+		    }, function ( e ) {
+		       //console.log( "Audio play error: " + e.message ); 
+		    } ); 
+			setTimeout(function(){//延时关闭
+			   s.close()//关闭释放资源
+			},1010)
+			
+		}
+		
+		//播放声音-失败音效
+		function playerNo(){//播放音乐
+		    s = plus.audio.createPlayer( "wav/NO.WAV" );
+		    var num = s.getDuration();//获取音频总长度number
+		    s.play( function () {
+		       // console.log( "Audio play success!" ); 
+		    }, function ( e ) {
+		       //console.log( "Audio play error: " + e.message ); 
+		    } ); 
+			setTimeout(function(){//延时关闭
+			   s.close()//关闭释放资源 
+			},1010)
+		}
+		
+		//退出按钮
+		function tuichuBtn(){
+			mui("#tuichu").on("tap", "a", function() {
+				mui.back();
+			});
+		}
+	</script>
+</html>

@@ -1,4 +1,4 @@
-.mui-bar-nav,.mui-title{
+/*.mui-bar-nav,.mui-title{
 	background-color:#C9302C;
 	color: white;
 	font-weight: bold;
@@ -7,4 +7,41 @@
 }
 .mui-bar-nav a{
 	color: white;
+}
+*/
+.table {
+	border: 1px solid #0e94ea;
+	border-top: none;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 15px;
+}
+
+
+.table th {
+	background-repeat: repeat-x;
+	/* height: 30px; */
+}
+
+.table td,
+.table th {
+	border: 1px solid #cad9ea;
+	padding: 0 1em 0;
+}
+
+.table tr.alter {
+	background-color: #f5fafe;
+}
+
+.table tr {
+	border-top: 1px solid #0e94ea;
+	background: rgba(14, 148, 234, 0.1);
+}
+
+.table thead tr {
+	background: rgba(14, 148, 234, 0.4);
+}
+
+.table tr.bg-color {
+	background: rgba(14, 148, 234, 0.2);
 }

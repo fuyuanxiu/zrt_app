@@ -128,18 +128,10 @@
 				   </div>
 			  {{/if}}
 		   {{else if item[2] == 'MEMO'}}
-			   <div class="mui-input-row" style="height:<%=(item[14])%>px;">
+			   <div class="mui-input-row" style="height: 4.5rem;">
 				<label><%=(item[1])%></label>
-				<textarea  class="form" rows="8" id="<%=(item[0])%>"></textarea>
+				<textarea  class="form" rows="5" id="<%=(item[0])%>"></textarea>
 			   </div>
-			{{else if item[2] == 'BUTTON'}}
-				<div class="mui-input-row" style="height: 4.5rem;">
-				 <ul class="mui-table-view ulcss" >
-					<li class="mui-table-view-cell acss" style="background-color: rgb(146, 148, 255);" onclick="clickButton(<%=(item)%>)">
-						<a ><%=(item[1])%></a>
-					</li>
-				 </ul>
-				</div>
 		   {{/if}}
 		   
 		<% } %>
@@ -152,7 +144,6 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			mui.plusReady(function() { 
-				plus.nativeUI.closeWaiting();//这里监听页面是否加载完毕，完成后关闭等待框
 				document.getElementById("title").innerHTML = api_localStorageGet("functionName");
 				document.getElementById("divid").innerHTML = "";
 				getData();
@@ -160,7 +151,7 @@
 			})
 
 			function getData() {
-				//console.log('getData')
+				console.log('getData')
 				mui.ajax(API.webPath + '/getRfSetup?functionName=' + api_localStorageGet("functionName"), {
 					data: {},
 					dataType: 'json',
@@ -176,6 +167,8 @@
 							 document.getElementById('divid').innerHTML = template('form-template', {
 								"record": data.data
 							});
+							
+							
 							addSwitchTog();
 							getSelectData();
 						} else {
@@ -198,19 +191,19 @@
 						doProByFile8(str,fileId);
 					}
 					//判断跳转字段
-					//console.log(file9)
-					//console.log(file10)
+					console.log(file9)
+					console.log(file10)
 					if(file9 == '1'){
 						//回车自动跳至下一非只读字段
 					}
 					if(file9 == '0' && file10 == ''){
 						//回车后就停留在本字段，本字段内容先清空
 						document.getElementById(fileId).value = '';
-						document.getElementById(fileId).focus();//获取焦点
+						document.getElementById(fileId).focus();获取焦点
 					}
 					if(file10 != ''){
 						//跳至指定字段，当要求跳到指定字段时，这个指定字段及后面顺序的字段框内容均需要清空；
-						document.getElementById(file10).focus();//获取焦点
+						document.getElementById(file10).focus();获取焦点
 					}
 				}
 				return false;
@@ -220,7 +213,7 @@
 				fileName=fileName.replace(/\s+/g,"");
 				var url = API.webPath + '/getExcProc?functionName=' + api_localStorageGet("functionName") +
 					'&fileName=' + fileName + '&pmachtype=&fileValue=' +  encodeURIComponent(fileValue)+'&outFiles='+outFiles;
-					console.log(fileValue)
+					console.log(url)
 				mui.ajax(url, {
 						data: {},
 						dataType: 'json',
@@ -232,9 +225,8 @@
 						success: function(data) {
 							console.log(JSON.stringify(data))
 							if (data.result) {
-								playerYes()
 								if(stype == 'proc'){
-									//console.log(data.data[0]);
+									console.log(data.data[0]);
 									for(var i = 0; i < data.data.length; i++){
 										var t = data.data[i];
 										if(document.getElementById(t[0])){
@@ -265,7 +257,6 @@
 								}
 								
 							} else {
-								playerNo()
 								mui.alert(data.msg, '错误', function() {
 									//关闭回调函数
 									//clearUi()
@@ -273,7 +264,6 @@
 							}
 						},
 						error: function(xhr, type, errorThrown) {
-							console.log(type)
 							plus.ui.toast("error1:"+type);
 						}
 					})
@@ -283,10 +273,6 @@
 				var switchs = document.getElementsByClassName('mui-switch');
 				if(switchs.length>0){
 					mui('.mui-switch')['switch']();
-					for(var i=0;i<switchs.length;i++){//2021-4-21 lst add 滑块按键增加默认值0
-						var fileId = switchs[i].getAttribute('data-href');
-						document.getElementById(fileId).value = "0";
-					}
 					for(var i=0;i<switchs.length;i++){
 						switchs[i].addEventListener("toggle", function(event) {
 							var fileId = this.getAttribute('data-href');
@@ -315,8 +301,8 @@
 			
 		}
 		function getCheckItem(file8,fileId){
-			//console.log(file8)
-			//console.log(fileId)
+			console.log(file8)
+			console.log(fileId)
 			var obj = document.getElementById('select-'+fileId); //定位id
 			var index = obj.selectedIndex; // 选中索引
 			var value = obj.options[index].value; // 选中值
@@ -328,20 +314,19 @@
 			doProByFile8(file8,fileId);
 		}
 		function doProByFile8(file8,fileId){
-			//console.log(file8)
+			console.log(file8)
 			var date = file8.substring(1, file8.length - 1);
 			var a = date.split("}{");
 			var iput = a[0].split(',');
-			//console.log(iput)
+			console.log(iput)
 			var fileValue = api_localStorageGet("code") + '[';
 			for (var i = 0; i < iput.length; i++) {
 				var fv = document.getElementById(iput[i]).value
 				fv = fv.replace(/\s*/g,"");
-				//console.log(fv)
+				console.log(fv)
 				fileValue += fv + '[';
 			}
 			fileValue = fileValue.substring(0, fileValue.length - 1);
-			//console.log(fileValue)
 			getExcProc(fileId, fileValue,a[1],'proc');
 		}
 		
@@ -357,42 +342,6 @@
 		    }
 		    document.getElementById('select-'+fileName).innerHTML = commHtml;
 		   }
-		
-		//点击按钮
-		function clickButton(item){
-			var file8=item[8]
-			doProByFile8(file8,item[0])
-				
-		}
-		
-		//播放声音-成功音效
-		function playerYes(){//播放音乐
-		    s = plus.audio.createPlayer( "wav/YES.WAV" );
-		    var num = s.getDuration();//获取音频总长度number
-		    s.play( function () {
-		       //console.log( "Audio play success!" ); 
-		    }, function ( e ) {
-		       //console.log( "Audio play error: " + e.message ); 
-		    } ); 
-			setTimeout(function(){//延时关闭
-			   s.close()//关闭释放资源
-			},1010)
-			
-		}
-		
-		//播放声音-失败音效
-		function playerNo(){//播放音乐
-		    s = plus.audio.createPlayer( "wav/NO.WAV" );
-		    var num = s.getDuration();//获取音频总长度number
-		    s.play( function () {
-		       // console.log( "Audio play success!" ); 
-		    }, function ( e ) {
-		       //console.log( "Audio play error: " + e.message ); 
-		    } ); 
-			setTimeout(function(){//延时关闭
-			   s.close()//关闭释放资源 
-			},1010)
-		}
 		
 		//退出按钮
 		function tuichuBtn(){

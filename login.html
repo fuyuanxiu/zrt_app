@@ -179,10 +179,11 @@
 							api_localStorageSave("factory", data.data.FFACTORY);
 							api_localStorageSave("company", data.data.FCOMPANY);
 							sessionStorage.setItem("bsCode", data.data.FCODE); //存一个session会话
-							mui.openWindow({
-								url: 'main_rf.html?username=' + username.value,
-								id: 'main_rf',
-							})
+							OpenWindow('main_rf','main_rf.html?username=' + username.value,{});
+							// mui.openWindow({
+							// 	url: 'main_rf.html?username=' + username.value,
+							// 	id: 'main_rf',
+							// })
 								
 						} else {
 							//登录失败

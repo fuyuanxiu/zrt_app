@@ -44,6 +44,13 @@
 				   		<div class="mui-media-body"><%=(item[0])%></div>
 				   	</a>
 				   </li>
+				{{else if item[0]=="换料QC核对"}}
+				<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-4 bg1">
+					<a data-href="<%=(item[0])%>" data-id="switch_qc">
+						<span class="mui-icon iconfont icon-<%=(item[1])%> " style="color: #FF8C00;"></span>
+						<div class="mui-media-body"><%=(item[0])%></div>
+					</a>
+				</li>
 				{{else}}
 					<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-4 bg1">
 						<a data-href="<%=(item[0])%>" data-id="input">
@@ -59,7 +66,7 @@
 <script type="text/javascript" charset="utf-8">
         mui.init();
         mui.plusReady(function(){
-			
+			plus.nativeUI.closeWaiting();//这里监听页面是否加载完毕，完成后关闭等待框
 			getData();
 			addTap();
         })
@@ -73,7 +80,7 @@
 			    success:function(data){
 					//document.getElementById("password").value="";
 			        if(data.result){ 
-						//console.log(JSON.stringify(data))
+						console.log(JSON.stringify(data))
 			            //取数成功
 						//"来料扫描#3","生产领料#2","生产退料#3","杂项入库#7","杂项出库#9","库存调拨#6","库存盘点#10","退出#tuichu"
 			           document.getElementById('list').innerHTML = template('li-template', {
@@ -98,12 +105,20 @@
 				var title=this.getAttribute("data-href");
 				if(id == 'login'){
 					plus.runtime.restart();
+				}else if(id=='switch_qc'){
+					api_localStorageSave("functionName", title);
+					OpenWindow(id,'switch_qc.html?functionName='+encodeURI(encodeURI(title)),{});
+					// mui.openWindow({
+					//     url:'switch_qc.html?functionName='+encodeURI(encodeURI(title)),
+					//     id:id,
+					// })
 				}else{
 					api_localStorageSave("functionName", title);
-					mui.openWindow({
-					    url:'input.html?functionName='+encodeURI(encodeURI(title)),
-					    id:id,
-					})
+					OpenWindow(id,'input.html?functionName='+encodeURI(encodeURI(title)),{});
+					// mui.openWindow({
+					//     url:'input.html?functionName='+encodeURI(encodeURI(title)),
+					//     id:id,
+					// })
 				}
 				 
 			})

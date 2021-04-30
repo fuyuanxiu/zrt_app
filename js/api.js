@@ -1,12 +1,12 @@
 var API = window.API = {
-	webPath			: "http://192.168.1.246:8080/jyapp/",
-	//webPath			: "http://10.1.12.76:9999/",
-	//webPath			: "http://10.1.1.102:8080/jyapp/",
-	//webPath			: "http://192.168.1.160:9998/jyapp/",
-	//webPath			: "http://192.168.1.26:9998/jyapp/",
-	//webPath			: "http://192.168.0.102:9999/",
-	//webPath			: "http://192.168.2.193:9999/jyapp/",
-	version         :"test",//demo:静态，prod:正式，test:测试
+	//webPath			: "http://192.168.1.160:8989/zrt/", //160-test
+	//webPath			: "http://192.168.2.158:8080/zrt/", //海虹
+	webPath			: "http://10.6.1.86:8080/T3app",//t3-test
+	//webPath			: "http://10.6.1.84:8080/T3app",//t3-official
+	//webPath			: "http://10.6.1.84:8090/Q1app",//q1-official
+	//webPath			: "http://10.168.0.69:8080/zrt/",//zrt-official
+	//webPath			: "http://192.168.2.106:8080/",//localhost
+	version         :"prod",//demo:静态，prod:正式，test:测试
 	env:'soap',//只支持web-service(soap)或者json
 	urls: {
 		login		: "anon/login!login.action",

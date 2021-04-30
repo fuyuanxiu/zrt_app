@@ -3,7 +3,7 @@
     "id" : "H562353AB", /*应用的标识，创建应用时自动生成，勿手动修改*/
     "name" : "安卓手持", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "1.0.9", /*应用版本名称*/
+        "name" : "1.0.12", /*应用版本名称*/
         "code" : "83"
     },
     "description" : "", /*应用描述信息*/
@@ -238,5 +238,6 @@
         "idle" : {
             "resources" : [ "js/mui.js", "css/mui.css" ]
         }
-    }
+    },
+    "screenOrientation" : [ "portrait-primary", "portrait-secondary" ]
 }
