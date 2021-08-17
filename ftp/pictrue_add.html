@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/api.js"></script>
+		<script src="../js/common.js"></script>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<script src="../js/template-web.js"></script>
+
+		<style type="text/css">
+			.mui-content {
+				margin-top: 2px;
+			}
+
+			.search {
+				border: 1px solid #e0e0e0;
+				border-radius: 5px;
+				display: flex;
+				width: 100%;
+				align-items: center;
+				margin-top: 10px;
+				/* padding:0px 10px 0;*/
+				background-color: rgba(255, 255, 255, 1);
+				padding-left: 10px;
+				margin-bottom: 10px;
+				height: 40px;
+			}
+
+			.search textarea {
+				margin-bottom: 0px;
+				padding: 0px 0px;
+				background: none;
+				border-radius: 5px;
+			}
+
+			.search input {
+				margin-bottom: 2px;
+				padding: 0px 0px;
+				background: none;
+			}
+
+			.ulcss {
+				padding: 5px 5px;
+			}
+
+			.title-right {
+				float: right;
+				line-height: 44px !important;
+				position: absolute;
+				display: block;
+				width: 100%;
+				margin: 0 0px !important;
+				padding: 0 !important;
+				text-align: center;
+				white-space: nowrap;
+				color: #000;
+				display: inline-block;
+				overflow: hidden;
+				width: auto;
+				margin: 0;
+				text-overflow: ellipsis;
+				color: #0062CC;
+			}
+
+			.close {
+				position: absolute;
+				top: 0;
+				right: 0;
+				z-index: 99;
+				color: red;
+			}
+		</style>
+	</head>
+	<body class="mui-fullscreen">
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title">PQC检验录入-拍照</h1>
+			<span class="title-right mui-icon mui-icon-image" id="moreBtn"></span>
+		</header>
+		<div class="mui-content">
+			<div class="search">
+				<button type="button" id="backBtn" class="mui-btn mui-icon mui-icon-undo">取消</button>
+				<input type="search" disabled="disabled" class="mui-input-clear" placeholder="">
+				<button type="button" data-loading-text="提交中" id="sureBtn" class="mui-btn mui-btn-green mui-icon  mui-icon-plus">确认</button>
+			</div>
+			<li class="search" style="height: 120px;">
+				<textarea id="areaId" class="form" rows="5" placeholder="请输入备注"></textarea>
+			</li>
+			<ul class="mui-table-view mui-grid-view mui-grid-9 ulcss" id="list">
+				<li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-2" name='addPictrue' id="addPictrue">
+					<span class="mui-icon iconfont icon-tianjiazhaopian"></span>
+				</li>
+			</ul>
+		</div>
+		</div>
+		<script id='ui-template' type="text/template">
+			<% for(var i in record){ var item=record[i]; %>
+			<li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-2 ">
+			<div class="close" data-index="<%=item.INDEX%>">X</div>
+				<a href="#" style="height: 3.125rem;">
+					<img class="mui-media-object mui-pull-left" src="<%=item.URL%>" data-preview-src="<%=item.URL%>">
+				</a>
+			</li>
+			<% } %>
+		</script>
+		<script id='video-template' type="text/template">
+			<% for(var i in record){ var item=record[i]; %>
+			<li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-2 ">
+			<div class="close" data-index="<%=item.INDEX%>">X</div>
+				<a href="#" style="height: 3.125rem;">
+					<video controls="" autoplay="" name="media"  >
+						<source src="<%=item.URL%>" type="video/mp4">
+					</video>
+				</a>
+			</li>
+			<% } %>
+		</script>
+		<script id='add-template' type="text/template">
+			<li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-2" id="addPictrue">
+				<span class="mui-icon iconfont icon-tianjiazhaopian" ></span>
+			</li>
+	    </script>
+
+		<script type="text/javascript" charset="utf-8">
+			//mui.previewImage();
+			var mid = "";var type = "";
+			mui.init();
+			mui.plusReady(function() {
+				mid = GetQueryString('mid');
+				type = GetQueryString('type');
+				clickPictrue(); //初始化拍照按钮
+				//照片列表
+				document.getElementById('moreBtn').addEventListener('tap', function(event) {
+					openList()
+				});
+				//返回
+				document.getElementById('backBtn').addEventListener('tap', function(event) {
+					mui.back();
+				});
+				//确定
+				document.getElementById('sureBtn').addEventListener('tap', function(event) {
+					//备注不能为空
+					var myTextarea = document.getElementById('areaId').value;
+					if (myTextarea == '') {
+						mui.toast('请先填写备注')
+						return;
+					}
+					var listImg = document.querySelectorAll("#list a")
+					if (listImg.length > 0) {
+						if (listImg.length > 9) {
+							mui.toast('不能超过9张图片!')
+							return;
+						}
+						mui(this).button('loading');
+						upload();
+						setTimeout(function() {
+							mui(this).button('reset');
+						}.bind(this), 2000); 
+					} else {
+						mui.toast('请先上传文件')
+					}
+
+				});
+				//删除
+				mui("#list").on("tap", ".close", function(event) {
+					var i = this.getAttribute('data-index');
+					var elem = this;
+					var li = elem.parentNode;
+					li.parentNode.removeChild(li);
+					//delete files[i];
+					files[i] = "";
+					//files.splice(i,1);
+				})
+			});
+			function openList(){
+				mui.openWindow({
+					id: "pictrue_list",
+					url: "pictrue_list.html",
+					extras: {
+						//自定义扩展参数，可以用来处理页面间传值 
+					},
+					show: { //控制打开页面的类型
+						autoShow: true,
+						//页面loaded事件发生后自动显示，默认为true 
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；  页面出现的方式 左右上下
+						duration: '100' //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒； 
+					},
+					waiting: { // 控制 弹出转圈框的信息
+						autoShow: true, //自动显示等待框，默认为true 
+						title: '加载中' //等待对话框上显示的提示内容 
+					}
+				});
+			}
+			var node;
+			function clickPictrue() {
+				document.getElementById('addPictrue').addEventListener('tap', function(event) {
+					var elem = this;
+					var li = elem;
+					node = elem;
+					//li.parentNode.removeChild(li); //先移除拍照图标
+					selectphto();
+				});
+
+			}
+
+			//拍照
+			function selectphto() {
+				if (mui.os.plus) {
+					var a = [{
+						title: "拍照"
+					}, {
+						title: "录像"
+					}, {
+						title: "从手机相册选择"
+					}];
+					plus.nativeUI.actionSheet({
+						title: "上传检验照片",
+						cancel: "取消",
+						buttons: a
+					}, function(b) { /*actionSheet 按钮点击事件*/
+						switch (b.index) {
+							case 0:
+								break;
+							case 1:
+								getImages(); /*拍照*/
+								break;
+							case 2:
+								getVideo(); /*录像*/ 
+								break;
+							case 3:
+								galleryImages(); /*打开相册*/
+								break;
+							default:
+								break;
+						}
+					})
+				}
+			}
+
+			function addPictrues(paths) {
+				var listImg = document.querySelectorAll("#list a")
+				if (listImg.length >= 9) {
+					mui.toast('不能超过9张图片!')
+					return;
+				}
+				var record = [];
+				var j = files.length;
+				for (var i in paths) {
+					var path = paths[i]
+					var temp = {
+						URL: path,
+						INDEX: j
+					};
+					record.push(temp);
+					files.push({
+						path: path
+					});
+					j++;
+				}
+				node.parentNode.removeChild(node); //先移除拍照图标
+				var html = document.getElementById("list").innerHTML;
+				document.getElementById('list').innerHTML = html + template('ui-template', {
+					"record": record
+				});
+				html = document.getElementById("list").innerHTML;
+				document.getElementById('list').innerHTML = html + template('add-template', {});
+				clickPictrue();
+			}
+			function addVideos(paths) {
+				var listImg = document.querySelectorAll("#list a")
+				if (listImg.length >= 9) {
+					mui.toast('不能超过9张图片!')
+					return;
+				}
+				var record = [];
+				var j = files.length;
+				for (var i in paths) {
+					var path = paths[i]
+					var temp = {
+						URL: path,
+						INDEX: j
+					};
+					record.push(temp);
+					files.push({
+						path: path
+					});
+					j++;
+				}
+				node.parentNode.removeChild(node); //先移除拍照图标
+				var html = document.getElementById("list").innerHTML;
+				document.getElementById('list').innerHTML = html + template('video-template', {
+					"record": record
+				});
+				html = document.getElementById("list").innerHTML;
+				document.getElementById('list').innerHTML = html + template('add-template', {});
+				clickPictrue();
+			}
+			var files = [];
+			//拍照
+			function getImages() {
+				var c = plus.camera.getCamera();
+				c.captureImage(function(e) {
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var imgSrc = entry.toLocalURL() + "?version=" + new Date().getTime(); //拿到图片路径
+						//alert(imgSrc);
+						addPictrues([imgSrc]); //添加照片的本地列表
+					}, function(e) {
+						console.log("读取拍照文件错误：" + e.message);
+					});
+				}, function(s) {
+					console.log("error" + s);
+				}, {
+					filename: "_doc/camera/",
+				})
+			}
+			/*这是打开录像的事件*/
+        function getVideo(){
+            var cmr = plus.camera.getCamera();
+            var res = cmr.supportedVideoResolutions[0];//获取支持的分辨率，拿默认的第一个
+            var fmt = cmr.supportedVideoFormats[0];//获取支持的录像文件格式，拿默认的第一个
+            cmr.startVideoCapture( function( e ){//录像成功后会返回一个路径到e这里
+                    plus.io.resolveLocalFileSystemURL(e, function(entry){//这个是根据路径读取文件信息，其实这步可以省略。
+                        //uploadVideo(e);
+                        var imgSrc = entry.toLocalURL() + "?version=" + new Date().getTime(); //拿到图片路径
+						//alert(imgSrc);
+						addVideos([imgSrc]); //添加照片的本地列表
+                    }, function(e){
+                        console.log("读取录像文件错误：" + e.message);
+                    });
+            },function( error ) {
+                    mui.toast("取消录制");
+                },
+                {resolution:res,format:fmt}
+            );
+        }
+
+			//从本地相册选择
+			function galleryImages() {
+				// 从相册中选择图片
+				plus.gallery.pick(function(e) {
+					/* for (var i in e.files) {
+						var fileSrc = e.files[i]
+						addPictrue(fileSrc); //添加照片的本地列表
+					} */
+					addPictrues(e.files);
+				}, function(e) {
+					console.log("取消选择图片");
+				}, {
+					//filter: "video",
+					filter: "none",
+					multiple: true,
+					maximum: 9,
+					system: false,
+					onmaxed: function() {
+						plus.nativeUI.alert('最多只能选择9张图片');
+					}
+				});
+			};
+			// 上传的方法
+			function upload() {
+				var url = API.webPath + 'ht_file/uploadFilepqc';
+				//var url = api_localStorageGet("webPath") + '/ht_file/uploadFilepqc';
+				//console.log(api_localStorageGet("webPath"))
+				var wt = plus.nativeUI.showWaiting();
+				createUp();
+
+				function createUp() {
+					var task = plus.uploader.createUpload(url, {
+							method: "POST"
+						},
+						function(t, status) { //上传完成
+							wt.close();
+							//console.log(status+"="+JSON.stringify(t)); 
+							if (status == 200) {
+								console.log("上传成功：" + t.responseText);
+								var btnArray = ['查看所有照片', '继续上传'];
+								mui.confirm('已经上传成功，请选择接下来的操作', '提示', btnArray, function(e) {
+									if (e.index == 1) {
+										//继续上传,清空原有数据
+										files = []
+										document.getElementById('areaId').value = "";
+										document.getElementById('list').innerHTML = template('add-template', {});
+										clickPictrue();
+									} else {
+										openList()
+									}
+								})
+							} else {
+								console.log("上传失败：" + status);
+								mui.toast("上传失败：" + status)
+							}
+						}
+					);
+					console.log(type)
+					//添加其他参数
+					task.addData("type1", type);
+					task.addData("company", api_localStorageGet("company"));
+					task.addData("factory", api_localStorageGet("factory"));
+					task.addData("mid", mid);
+					task.addData("username", api_localStorageGet("code"));
+					task.addData("note", document.getElementById('areaId').value)
+					//file:///storage/emulated/0/0001_1_1_0_00_11.png
+					//file:///storage/emulated/0/$MuMu共享文件夹/MuMu20190812134501.png
+					for (var i = 0; i < files.length; i++) {
+						if (files[i] == "" || typeof(files[i]) == "undefined") {
+							files.splice(i, 1);
+							i = i - 1;
+						} else {
+							task.addFile(files[i].path.toString(), {
+								key: "file" + i + ""
+							});
+						}
+						console.log(files[i].path.toString())
+					}
+					task.start();
+				}
+			}
+		</script>
+	</body>
+</html>

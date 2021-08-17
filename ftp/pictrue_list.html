@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/api.js"></script>
+		<script src="../js/common.js"></script>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<script src="../js/template-web.js"></script>
+
+		<!-- <script src="../js/lazyload/mui.lazyload.js"></script>
+		<script src="../js/lazyload/mui.lazyload.img.js"></script> -->
+
+		<script src="../js/preview/mui.previewimage.js"></script>
+		<script src="../js/preview/mui.zoom.js"></script>
+		<link rel="stylesheet" type="text/css" href="../js/preview/preview.css" />
+
+		<style type="text/css">
+			.mui-content {
+				margin-top: 2px;
+			}
+		</style>
+	</head>
+	<body class="mui-fullscreen">
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title">照片列表</h1>
+		</header>
+		<div class="mui-content" id="contentId">
+		</div>
+		</div>
+		<script id='li-template' type="text/template">
+			<% for(var i in record){ var item=record[i]; var picl = record[i].FATTACH.split(",");  %>
+				<ul  class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell mui-media">
+						<a href="javascript:;">
+							<div class="mui-media-body">
+								<%=(item.CD)%>
+								<p class='mui-ellipsis'><%=(item.FNOTE)%></p>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view mui-grid-view mui-grid-9 ulcss" id="list">
+					 <% for(var j in picl){ var img =picl[j]; var url = $imports.getUrl(item.FURL,img); var f = $imports.checkFileType(img) %>
+					<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-3 "> 
+							{{if f}}
+							<a href="#" class="vedio"  data-src="{{url}}" style="height: 5.3125rem;background: #000">
+							     <span data-src="{{url}}" class="mui-icon iconfont icon-bofang" ></span>
+							     <!-- <video data-src="{{url}}"controls="" autoplay="" name="media"  >
+							       <source src="{{url}}" type="video/mp4" >
+							     </video> -->
+								</a>
+							{{else}}
+							<a href="#" style="height: 5.3125rem;">
+								 <img class="mui-media-object mui-pull-left"  src="{{url}}" data-preview-src="" data-preview-group="{{i}}">
+								 </a>
+							 {{/if}}
+					
+					</li>
+					<% } %>
+				</ul>
+				<% } %>
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			mui.previewImage();
+			var mid = "";var player=null;
+			mui.init();
+
+			mui.plusReady(function() {
+				mid = GetQueryString('mid');
+				getImgs(mid);
+				play();
+			});
+
+			function getImgs(mid) {
+				aj.post("/ht_file/getFilesList", {
+							mid:mid
+						}, function (data) {
+							//console.log(JSON.stringify(data))
+					if (data.result) {
+						document.getElementById('contentId').innerHTML = template('li-template', {
+							"record": data.data
+						});
+					} else {
+						plus.ui.toast(data.msg);
+					}
+				});
+			}
+			template.defaults.imports.checkFileType = function (str) { 
+				console.log(str)
+				if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(str)) {
+					return true;
+				}
+				return false;
+		    };
+			template.defaults.imports.getUrl = function (url,img) {
+				//console.log(API.webPath+"ht_file/view?url="+url+"&fname="+img)
+				return API.webPath+"ht_file/view?url="+url+"&fname="+img
+			}; 
+			function play(){
+				mui('#contentId').on('tap','.vedio',function(){
+					//console.log(this.getAttribute('data-src'))    
+                     //playVideo(this.getAttribute('data-src'));
+					 downFile(this.getAttribute('data-src'));
+					 });
+			};
+			function downFile(url){
+				// 下载地址
+				var wt = plus.nativeUI.showWaiting();
+							//var url = yang.getMyURL(14);
+							var dtask = plus.downloader.createDownload(url, {}, function(d, status) {
+								wt.close();
+								if(status == 200) {
+									var fileUrl = d.filename;
+									//console.log(fileUrl)
+									plus.runtime.openFile(fileUrl, {}, function(e) {
+										plus.nativeUI.toast('打开失败');
+									});
+								} else {
+									plus.nativeUI.toast('打开失败');
+								}
+							});
+							// 执行下载任务，再打开
+							dtask.start();
+			};
+			 function playVideo(url) {
+                var Intent = plus.android.importClass("android.content.Intent");
+                var Uri = plus.android.importClass("android.net.Uri");
+                var main = plus.android.runtimeMainActivity();
+                var intent = new Intent(Intent.ACTION_VIEW);
+                var uri = Uri.parse(url);
+                intent.setDataAndType(uri, "video/*");
+                main.startActivity(intent);
+            };
+		</script>
+	</body>
+</html>

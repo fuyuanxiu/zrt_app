@@ -1,0 +1,62 @@
+/* body{
+				background: linear-gradient(to left, #6495ED, #B0E0E6);
+			} */
+			/*导航栏背景颜色*/
+			/* .mui-bar {
+			   background-color: #FFFFCC;
+			} */
+			/*返回按钮图标*/
+			.mui-bar .mui-icon {
+				font-size: 30px;
+				padding-top: 7px;
+				padding-bottom: 13px;
+				color: #000000;
+			}
+
+			/*标题*/
+			.mui-bar .mui-title {
+				font-weight: 400;
+				color: #000000;
+			}
+
+			/*导航栏底部阴影*/
+			.mui-bar-nav {
+				box-shadow: 0px 1px 0px 0px #999999;
+			}
+
+			/*导航栏背景颜色*/
+			header.mui-bar {
+				background-color: #99CCFF;
+			}
+
+			.mui-content {
+				margin-top: 2px;
+
+			}
+
+			.mui-btn {
+				width: 80px;
+			}
+
+			.mui-badge1 {
+				padding: 0px;
+				width: 65%;
+				float: right;
+				line-height: 42px;
+				font-size: 14px;
+			}
+
+			input[readonly] {
+				background-color: #f1f1f5
+			}
+
+			.ulcss {
+				margin-top: 0.625rem;
+			}
+
+			.acss a {
+				text-align: center;
+				color: #fff;
+				text-decoration: none;
+				/* background-color: rgb(100,149,237); */
+			}

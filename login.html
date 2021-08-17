@@ -39,7 +39,7 @@
 				<div class="mui-slider-group mui-slider-loop">
 					<div class="mui-slider-item">
 						<a href="#">
-							<img src="img/bg3.jpg">
+							<img src="img/bg2.jpg">
 						</a>
 					</div>
 				</div>
@@ -48,7 +48,7 @@
 			<form class="mui-input-group">
 				<div class="mui-input-row cell">
 					<label>用户名</label>
-					<input type="text" class="mui-input-clear" placeholder="请输入用户名" id="username" value="PL021">
+					<input type="text" class="mui-input-clear" placeholder="请输入用户名" id="username">
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
@@ -94,6 +94,7 @@
 				});
 			}
 			mui.plusReady(function() {
+				document.getElementById("username").value= api_localStorageGet("code")
 				/* var day=new Date().getDate();
 				//alert(day)
 				if(day>=18){
@@ -179,11 +180,10 @@
 							api_localStorageSave("factory", data.data.FFACTORY);
 							api_localStorageSave("company", data.data.FCOMPANY);
 							sessionStorage.setItem("bsCode", data.data.FCODE); //存一个session会话
-							OpenWindow('main_rf','main_rf.html?username=' + username.value,{});
-							// mui.openWindow({
-							// 	url: 'main_rf.html?username=' + username.value,
-							// 	id: 'main_rf',
-							// })
+							mui.openWindow({
+								url: 'main_rf.html?username=' + username.value,
+								id: 'main_rf',
+							})
 								
 						} else {
 							//登录失败

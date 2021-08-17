@@ -48,13 +48,11 @@
 
 			.table thead tr {
 				background: rgba(14, 148, 234, 0.4);
-				
 			}
 
 			.table tr.bg-color {
 				background: rgba(14, 148, 234, 0.2);
 			}
-			
 		</style>
 	</head>
 	<body>
@@ -65,21 +63,21 @@
 			<h1 class="mui-title" id="title">MES移动终端</h1>
 		</header>
 		<!-- <dialog id="t_dialog" class="t-dialog" style="width: 98%;height: 80%;display: none;">
-    <div style="border-top:solid 2px #ffffff;height:85%;overflow:auto;">
-        <table width="100%;" class="table">
-            <thead id="t_head">
-            </thead>
-            <tbody id="t_body">
-            </tbody>
-        </table>
-    </div>
-    <div class="mui-button-row">
-        <button type="reset" class="mui-btn" onclick="document.getElementById('t_dialog').style.display = 'none';">关闭</button>
-    </div>
-</dialog> -->
+			<div style="border-top:solid 2px #ffffff;height:85%;overflow:auto;">
+				<table width="100%;" class="table">
+					<thead id="t_head">
+					</thead>
+					<tbody id="t_body">
+					</tbody>
+				</table>
+			</div>
+			<div class="mui-button-row">
+				<button type="reset" class="mui-btn" onclick="document.getElementById('t_dialog').style.display = 'none';">关闭</button>
+			</div>
+		</dialog> -->
 		<div class="mui-content">
 			<div id="divid"></div>
-			<div id="tableDiv" style="border-top:solid 2px #ffffff;height:20rem;overflow: auto; display: none;">
+			<div id="tableDiv" style="border-top:solid 2px #ffffff;height:20rem;overflow:auto;display: none;">
 				<table width="100%;" class="table">
 					<thead id="t_head">
 					</thead>
@@ -91,96 +89,82 @@
 		<script id='form-template' type="text/template">
 			<form class="mui-input-group" id="form">
 		<% for(var i in record){ var item=record[i]; %>
-
-		{{if item[2] == 'VARCHAR2'}}
-		{{if item[4] == '3'}}
-		<div class="mui-input-row">
-			<label><%=(item[1])%></label>
-			{{if item[3] == '1'}}
-			<input readonly type="text" id="<%=(item[0])%>" value="<%=(item[12])%>" style="background-color: #f1f1f5">
-			{{else }}
-			<input type="text" id="<%=(item[0])%>" class="mui-input-clear" value="<%=(item[12])%>" οnfοcus="this.select()" οnmοuseοver="this.focus()" onkeyup="enterSearch(event,'<%=(item[7])%>','<%=(item[8])%>','<%=(item[0])%>','<%=(item[9])%>','<%=(item[10])%>')" placeholder="请输入<%=(item[1])%>">
-			{{/if}}
-		</div>
-		{{else if item[4] == '4'}}
-		<div class="mui-input-row">
-			<label><%=(item[1])%></label>
-			<input id="<%=(item[0])%>" value="<%=(item[12])%>" type="hidden">
-			<a class="mui-navigate-right">
+		   
+		   {{if item[2] == 'VARCHAR2'}}
+		      {{if item[4] == '3'}}
+			    <div class="mui-input-row">
+			      <label><%=(item[1])%></label>
+				  {{if item[3] == '1'}}
+				    <input readonly type="text" id="<%=(item[0])%>" value="<%=(item[12])%>" style="background-color: #f1f1f5">
+				  {{else }}
+					<input type="text" id="<%=(item[0])%>" class="mui-input-clear" value="<%=(item[12])%>" οnfοcus="this.select()" οnmοuseοver="this.focus()" onkeyup="enterSearch(event,'<%=(item[7])%>','<%=(item[8])%>','<%=(item[0])%>','<%=(item[9])%>','<%=(item[10])%>')" placeholder="请输入<%=(item[1])%>">	
+				  {{/if}}   
+			    </div>
+			   {{else if item[4] == '4'}} 
+			   <div class="mui-input-row">
+			   	<label><%=(item[1])%></label>
+				<input id="<%=(item[0])%>" value="<%=(item[12])%>" type="hidden">
+			   	<a class="mui-navigate-right">
 			   		<span class="mui-badge1">
 			   			<select class="mui-select" id="select-<%=(item[0])%>" style="margin:auto; color:#000;" onchange="getCheckItem('<%=(item[8])%>','<%=(item[0])%>');">
 			   				<%=(item[0])%>
 			   			</select>
 			   		</span>
-			</a>
-		</div>
-		{{else if item[4] == '9'}}
-		<div class="mui-input-row" style="height: 4rem;">
-			<ul class="mui-table-view ulcss" >
-				<li class="mui-table-view-cell acss" style="background-color: rgb(129, 255, 140);" onclick="photoButton(<%=(item)%>)">
-					<a ><%=(item[1])%></a>
-				</li>
-			</ul>
-		</div>
-		{{else if item[4] == '11'}}
-		<div class="mui-input-row" style="height: 4rem;">
-			<ul class="mui-table-view ulcss" >
-				<li class="mui-table-view-cell acss" style="background-color: rgb(255, 215, 114);" onclick="listButton(<%=(item)%>)">
-					<a ><%=(item[1])%></a>
-				</li>
-			</ul>
-		</div>
-
-		{{else if item[4] == '13'}}
-		<div class="mui-input-row" style="height: 4rem;">
-			<ul class="mui-table-view ulcss" >
-				<li class="mui-table-view-cell acss" style="background-color: rgb(153,204,153);"  onclick="clickPrintBtn(<%=(item)%>)">
-					<a><%=(item[1])%></a>
-				</li>
-			</ul>
-		</div>
-
-		{{else}}
-		<div class="mui-input-row">
-			<label><%=(item[1])%></label>
-			<input id="<%=(item[0])%>" value="<%=(item[12])%>" type="hidden">
-			<div id="<%=(item[0])%>-switch" data-href="<%=(item[0])%>" class="mui-switch">
-				<div class="mui-switch-handle"></div>
-			</div>
-		</div>
-		{{/if}}
-		{{else if item[2] == 'MEMO'}}
-		<div class="mui-input-row" style="height:<%=(item[14])%>px;">
-			<label><%=(item[1])%></label>
-			<textarea  class="form" rows="8" id="<%=(item[0])%>"></textarea>
-		</div>
-		{{else if item[2] == 'BUTTON'}}
-		<div class="mui-input-row" style="height: 4rem;">
-			<ul class="mui-table-view ulcss" >
-				<li class="mui-table-view-cell acss" style="background-color: rgb(146, 148, 255);" onclick="clickButton(<%=(item)%>)">
-					<a ><%=(item[1])%></a>
-				</li>
-			</ul>
-		</div>
-		{{/if}}
-
+			   	</a>
+			   </div>
+			   {{else if item[4] == '9'}}
+			   <div class="mui-input-row" style="height: 4rem;">
+			    <ul class="mui-table-view ulcss" >
+			   	<li class="mui-table-view-cell acss" style="background-color: rgb(129, 255, 140);" onclick="photoButton(<%=(item)%>)">
+			   		<a ><%=(item[1])%></a>
+			   	</li>
+			    </ul>
+			   </div>
+			   {{else if item[4] == '11'}}
+			   <div class="mui-input-row" style="height: 4rem;">
+			    <ul class="mui-table-view ulcss" >
+			   	<li class="mui-table-view-cell acss" style="background-color: rgb(255, 215, 114);" onclick="listButton(<%=(item)%>)">
+			   		<a ><%=(item[1])%></a>
+			   	</li>
+			    </ul>
+			   </div>
+			   {{else}}
+				   <div class="mui-input-row">
+				     <label><%=(item[1])%></label>
+				      <input id="<%=(item[0])%>" value="<%=(item[12])%>" type="hidden"> 
+				     <div id="<%=(item[0])%>-switch" data-href="<%=(item[0])%>" class="mui-switch">
+				   	  <div class="mui-switch-handle"></div>
+				   	</div>
+				   </div>
+			  {{/if}}
+		   {{else if item[2] == 'MEMO'}}
+			   <div class="mui-input-row" style="height:<%=(item[14])%>px;">
+				<label><%=(item[1])%></label>
+				<textarea  class="form" rows="8" id="<%=(item[0])%>"></textarea>
+			   </div>
+			{{else if item[2] == 'BUTTON'}}
+				<div class="mui-input-row" style="height: 4rem;">
+				 <ul class="mui-table-view ulcss" >
+					<li class="mui-table-view-cell acss" style="background-color: rgb(146, 148, 255);" onclick="clickButton(<%=(item)%>)">
+						<a ><%=(item[1])%></a>
+					</li>
+				 </ul>
+				</div>
+		   {{/if}}
+		   
 		<% } %>
-
-	</form>
-
-</script>
+		
+		</form>
+		
+	</script>
 
 
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			var YES_VOICE;
-			var NO_VOICE;
 			mui.plusReady(function() {
 				document.getElementById("title").innerHTML = api_localStorageGet("functionName");
 				document.getElementById("divid").innerHTML = "";
 				getData();
-				YES_VOICE = plus.audio.createPlayer("wav/YES.WAV");
-				NO_VOICE = plus.audio.createPlayer("wav/NO.WAV");
 				//tuichuBtn();
 			})
 
@@ -259,9 +243,9 @@
 					success: function(data) {
 						console.log(JSON.stringify(data))
 						if (data.result) {
+							playerYes()
 							if (stype.indexOf('proc') != -1) {
 								//console.log(data.data[0]);
-								playerYes()
 								for (var i = 0; i < data.data.length; i++) {
 									var t = data.data[i];
 									if (document.getElementById(t[0])) {
@@ -283,17 +267,22 @@
 									if (t[i].length > 0) {
 										commHtml += "<option value='" + t[i] + "'>" + t[i] + "</option>";
 									}
+
 								}
 								document.getElementById('select-' + fileName).innerHTML = commHtml;
-							}
+								// document.getElementById(fileName).innerHTML = template('select-template', {
+								// 	"record1": [['12321']]
+								// });
+							} 
+							
 							if (stype.indexOf('cursor') != -1) {
 								var valueData = data.data.toString()
 								var t1 = valueData.substring(valueData.indexOf(',') + 1, valueData.length)
-								//console.log(t1)
-								var tData = t1.split(',')
-								//console.log(tData)
-								var table = tData[tData.length - 1].split('{')
-								var tbody = ''
+								console.log(t1)
+								var tData=t1.split(',')
+								console.log(tData)
+								var table = tData[tData.length-1].split('{')
+								var tbody=''
 								for (var i = 0; i < table.length; i++) {
 									var item = table[i].split('@')
 									if (i == 0) {
@@ -302,27 +291,20 @@
 											thead += '<th>' + item[j] + '</th>'
 										}
 										thead += '</tr>'
-										document.getElementById('t_head').innerHTML = thead
-									} else {
+										document.getElementById('t_head').innerHTML=thead
+									}else{
 										var tbodyItem = '<tr>'
 										for (var j = 0; j < item.length; j++) { //处理数据
 											tbodyItem += '<td>' + item[j] + '</td>'
 										}
 										tbodyItem += '</tr>'
-										tbody += tbodyItem
+										tbody+=tbodyItem
 									}
 								}
-								document.getElementById('t_body').innerHTML = tbody
-								document.getElementById('tableDiv').style.display = 'block'
+								document.getElementById('t_body').innerHTML=tbody
+								
+								document.getElementById('tableDiv').style.display='block'
 								//document.getElementById('t_dialog').style.display='block'
-							} else if (stype == 'print') {
-								//打印 ，1取到ID,2查询打印内容,3调用打印
-								var da = data.data[0];
-								if (da != "") {
-									da.splice(0, 1);
-									printByIds(da.toString());
-								}
-								// printByIds(da.toString());
 							}
 						} else {
 							playerNo()
@@ -408,73 +390,17 @@
 				fileValue = fileValue.substring(0, fileValue.length - 1);
 				//console.log(fileValue)
 				//getExcProc(fileId, fileValue, a[1], 'proc');
-
-				if (a[1]) {
-					var input = a[1].split(',');
-					if (input[input.length - 1] == 'FVIEW') {
+				
+				if(a[1]){
+					var input=a[1].split(',');
+					if(input[input.length-1]=='FVIEW'){
 						getExcProc(fileId, fileValue, a[1], 'cursor+proc');
-					} else {
+					}else{
 						getExcProc(fileId, fileValue, a[1], 'proc');
 					}
-				} else {
+				}else{
 					getExcProc(fileId, fileValue, a[1], 'proc');
 				}
-			}
-
-			//点击打印
-			function clickPrintBtn(item) {
-				var file8 = item[8]
-				var file9 = item[9]
-				var file10 = item[10]
-				var fileId = item[0]
-				var date = file8.substring(1, file8.length - 1);
-				var a = date.split("}{");
-				var iput = a[0].split(',');
-				var fileValue = api_localStorageGet("code") + '[';
-				for (var i = 0; i < iput.length; i++) {
-					var fv = document.getElementById(iput[i]).value
-					fv = fv.replace(/\s*/g, "");
-					//console.log(fv)
-					fileValue += fv + '[';
-				}
-				fileValue = fileValue.substring(0, fileValue.length - 1);
-				getExcProc(fileId, fileValue, a[1], 'print');
-
-				if (file9 == '0' && file10 == '') {
-					//回车后就停留在本字段，本字段内容先清空
-					document.getElementById(fileId).value = '';
-					document.getElementById(fileId).focus(); //获取焦点
-				}
-				if (file10 != '') {
-					//跳至指定字段，当要求跳到指定字段时，这个指定字段及后面顺序的字段框内容均需要清空；
-					document.getElementById(file10).value = '';
-					document.getElementById(file10).focus(); //获取焦点
-				}
-
-			}
-
-			function printByIds(ids) {
-				// console.log(ids);
-				mui.ajax(API.webPath + '/getPrintInfoById', {
-					data: {
-						"ids": ids,
-					},
-					type: 'POST',
-					timeout: 10000,
-					success: function(data) {
-						if (data.result) {
-							console.log(data.data);
-							var result = plus.bridge.execSync("PrintPlugin", "printTest", data.data);
-							// alert(result);
-						} else {
-							//查询失败原因
-							// plus.ui.toast(data.msg);
-						}
-					},
-					error: function(xhr, type, errorThrown) {
-						plus.ui.toast('打印失败!失败类型是:' + type);
-					}
-				})
 			}
 
 			function doProByFile8Cursor(file8, fileId) {
@@ -518,8 +444,8 @@
 					id: 'pictrue_add',
 					url: 'ftp/pictrue_add.html',
 					waiting: { // 控制 弹出转圈框的信息
-						autoShow: true, //自动显示等待框，默认为true
-						title: '加载中' //等待对话框上显示的提示内容
+						autoShow: true, //自动显示等待框，默认为true 
+						title: '加载中' //等待对话框上显示的提示内容 
 					}
 				});
 			}
@@ -529,31 +455,34 @@
 				doProByFile8Cursor(file8, item[0])
 				//document.getElementById('t_dialog').style.display='block'
 			}
-			
+
 			//播放声音-成功音效
 			function playerYes() { //播放音乐
-				var num = YES_VOICE.getDuration(); //获取音频总长度number
-				YES_VOICE.play(function() {
-					//console.log( "Audio play success!" );
+				s = plus.audio.createPlayer("wav/YES.WAV");
+				var num = s.getDuration(); //获取音频总长度number
+				s.play(function() {
+					//console.log( "Audio play success!" ); 
 				}, function(e) {
-					//console.log( "Audio play error: " + e.message );
+					//console.log( "Audio play error: " + e.message ); 
 				});
-				// setTimeout(function() { //延时
-				// 	YES_VOICE.stop() //停止播放
-				// }, 1010)
+				setTimeout(function() { //延时关闭
+					s.close() //关闭释放资源
+				}, 1010)
+
 			}
 
 			//播放声音-失败音效
 			function playerNo() { //播放音乐
-				var num = NO_VOICE.getDuration(); //获取音频总长度number
-				NO_VOICE.play(function() {
-					// console.log( "Audio play success!" );
+				s = plus.audio.createPlayer("wav/NO.WAV");
+				var num = s.getDuration(); //获取音频总长度number
+				s.play(function() {
+					// console.log( "Audio play success!" ); 
 				}, function(e) {
-					//console.log( "Audio play error: " + e.message );
+					//console.log( "Audio play error: " + e.message ); 
 				});
-				// setTimeout(function() { //延时
-				// 	NO_VOICE.stop()//停止播放
-				// }, 1010)
+				setTimeout(function() { //延时关闭
+					s.close() //关闭释放资源 
+				}, 1010)
 			}
 
 			//退出按钮

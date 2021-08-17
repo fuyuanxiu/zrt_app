@@ -16,7 +16,7 @@
 	<script src="js/jquery.xml2json.js.js"></script> 
 	
 	<!-- <link rel="stylesheet" type="text/css" href="css/personal.css" /> -->
-	<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_783714_7tht2ujc04k.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_783714_7tht2ujc04k.css" /> -->
 	<script src="js/main.js"></script>
     <style type="text/css">
         .mui-content{margin-top: 2px;}
@@ -66,7 +66,7 @@
 <script type="text/javascript" charset="utf-8">
         mui.init();
         mui.plusReady(function(){
-			plus.nativeUI.closeWaiting();//这里监听页面是否加载完毕，完成后关闭等待框
+			
 			getData();
 			addTap();
         })
@@ -80,7 +80,7 @@
 			    success:function(data){
 					//document.getElementById("password").value="";
 			        if(data.result){ 
-						console.log(JSON.stringify(data))
+						//console.log(JSON.stringify(data))
 			            //取数成功
 						//"来料扫描#3","生产领料#2","生产退料#3","杂项入库#7","杂项出库#9","库存调拨#6","库存盘点#10","退出#tuichu"
 			           document.getElementById('list').innerHTML = template('li-template', {
