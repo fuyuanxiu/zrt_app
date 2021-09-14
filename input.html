@@ -172,9 +172,15 @@
 
 
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
 			var YES_VOICE;
 			var NO_VOICE;
+			mui.init({
+				beforeback: function() {
+					YES_VOICE.close()
+					NO_VOICE.close()//释放音频资源
+					return true; //返回true,继续页面关闭逻辑
+				}
+			});
 			mui.plusReady(function() {
 				document.getElementById("title").innerHTML = api_localStorageGet("functionName");
 				document.getElementById("divid").innerHTML = "";

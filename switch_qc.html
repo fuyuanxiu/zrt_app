@@ -146,9 +146,19 @@
 		</div>
 	</body>
 	<script type="text/javascript" charset="utf-8">
-		mui.init();
+		var YES_VOICE;
+		var NO_VOICE;
+		mui.init({
+				beforeback: function() {
+					YES_VOICE.close()
+					NO_VOICE.close() //释放音频资源
+					return true; //返回true,继续页面关闭逻辑
+				}
+			});
 		mui.plusReady(function() {
 			document.getElementById("title").innerHTML = api_localStorageGet("functionName");
+			YES_VOICE = plus.audio.createPlayer("wav/YES.WAV");
+			NO_VOICE = plus.audio.createPlayer("wav/NO.WAV");
 			//document.getElementById("divid").innerHTML = "";
 			var param = "换料QC核对[FILED1[" + api_localStorageGet("name")
 			getData(param,"name");
@@ -282,32 +292,23 @@
 		}
 		
 		//播放声音-成功音效
-		function playerYes(){//播放音乐
-		    s = plus.audio.createPlayer( "wav/YES.WAV" );
-		    var num = s.getDuration();//获取音频总长度number
-		    s.play( function () {
-		       //console.log( "Audio play success!" ); 
-		    }, function ( e ) {
-		       //console.log( "Audio play error: " + e.message ); 
-		    } ); 
-			setTimeout(function(){//延时关闭
-			   s.close()//关闭释放资源
-			},1010)
-			
+		function playerYes() { //播放音乐
+			var num = YES_VOICE.getDuration(); //获取音频总长度number
+			YES_VOICE.play(function() {
+				//console.log( "Audio play success!" );
+			}, function(e) {
+				//console.log( "Audio play error: " + e.message );
+			});
 		}
 		
 		//播放声音-失败音效
-		function playerNo(){//播放音乐
-		    s = plus.audio.createPlayer( "wav/NO.WAV" );
-		    var num = s.getDuration();//获取音频总长度number
-		    s.play( function () {
-		       // console.log( "Audio play success!" ); 
-		    }, function ( e ) {
-		       //console.log( "Audio play error: " + e.message ); 
-		    } ); 
-			setTimeout(function(){//延时关闭
-			   s.close()//关闭释放资源 
-			},1010)
+		function playerNo() { //播放音乐
+			var num = NO_VOICE.getDuration(); //获取音频总长度number
+			NO_VOICE.play(function() {
+				// console.log( "Audio play success!" );
+			}, function(e) {
+				//console.log( "Audio play error: " + e.message );
+			});
 		}
 		
 		//退出按钮

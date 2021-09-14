@@ -1,16 +1,15 @@
 var API = window.API = {
 	//webPath			: "http://192.168.1.160:8989/zrt/", //160-test
-	//webPath			: "http://112.16.176.33:8989/rk_mes/", //rk
+	//webPath			: "http://192.168.0.129:8080/ho_mes/", //rk
 	//webPath			: "http://192.168.5.93:8989/rk_mes/", //rk-test
 	//webPath			: "http://192.168.2.80:8080/libang", //libang
 	//webPath			: "http://10.6.1.86:8080/T3app",//t3-test
 	//webPath			: "http://10.6.1.84:8080/T3app",//t3-official
 	//webPath			: "http://10.6.1.84:8090/Q1app",//q1-official
 	//webPath			: "http://10.6.1.84:8070/Q6app",//q6-official
-	webPath			: "http://10.168.0.69:8080/zrt/",//zrt-official
+	//webPath			: "http://10.168.0.69:8080/zrt/",//zrt-official
 	//webPath			: "http://192.168.0.110:9999",//localhost
-	//webPath			: "http://192.168.5.81:8080/PLEE/",//rk-official
-	//webPath			: "http://192.168.1.245:8080/jyapp",//lyt-test
+	webPath			: "http://192.168.1.132:8080/mes/",//
 	//webPath			: "http://192.168.1.246:8080/jyapp",//lyt-official
 	version         :"prod",//demo:静态，prod:正式，test:测试
 	env:'soap',//只支持web-service(soap)或者json
